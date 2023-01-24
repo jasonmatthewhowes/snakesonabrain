@@ -24,21 +24,24 @@ class HandleRequests(BaseHTTPRequestHandler):
         if '?' not in self.path:
             ( resource, id, query_params ) = parsed
 
-            if resource == "animals":
+            if resource == "owners":
                 if id is not None:
-                    response = get_single_animal(id)
+                    response = get_single_owner(id)
                 else:
-                    response = get_all_animals(query_params)
-            elif resource == "customers":
+                    response = get_all_owners(query_params)
+            elif resource == "snakes":
                 if id is not None:
-                    response = get_single_customer(id)
+                    response = get_single_snake(id)
+                    if response["species_id"]==2:
+                        self._set_headers(405)
+                        response = {}
                 else:
-                    response = get_all_customers()
-            elif resource == "employees":
+                    response = get_all_snakes(query_params)
+            elif resource == "species":
                 if id is not None:
-                    response = get_single_employee(id)
+                    response = get_single_species(id)
                 else:
-                    response = get_all_employees()
+                    response = get_all_species(query_params)
             elif resource == "locations":
                 if id is not None:
                     response = get_single_location(id)
@@ -64,6 +67,8 @@ class HandleRequests(BaseHTTPRequestHandler):
             elif query.get('status') and resource == 'animals':
                 response = get_animals_by_status(query['status'][0])
 
+   
+            
         self.wfile.write(json.dumps(response).encode())
     
     # Here's a method on the class that overrides the parent's method.
